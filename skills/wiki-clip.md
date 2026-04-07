@@ -7,14 +7,23 @@ description: Clip a URL, YouTube video, PDF, or local file into the Obsidian vau
 
 Clip a source into the Obsidian vault for later compilation.
 
+## Environment
+
+The wikismith CLI lives in a venv at `~/dev/wikismith/.venv/`. Always invoke via:
+```bash
+~/dev/wikismith/.venv/bin/wikismith clip "<source>"
+```
+
+Config file: `~/dev/wikismith/wikismith.yaml` (or pass `--config <path>`)
+
 ## Steps
 
 1. Read `wikismith.yaml` to get clip configuration.
 2. Determine the source type:
-   - **YouTube URL** (`youtube.com`, `youtu.be`): Run `wikismith clip "<url>"` via Bash. Then read the output file and replace the summary placeholder with an actual AI summary of the transcript (you ARE the LLM).
-   - **Web URL** (`http://`, `https://`): Run `wikismith clip "<url>"` via Bash.
-   - **PDF file**: Run `wikismith clip "<path>"` via Bash.
-   - **Local file**: Run `wikismith clip "<path>"` via Bash.
+   - **YouTube URL** (`youtube.com`, `youtu.be`): Run the clip command via Bash. Then read the output file and replace the summary placeholder with an actual AI summary of the transcript (you ARE the LLM).
+   - **Web URL** (`http://`, `https://`): Run the clip command via Bash.
+   - **PDF file**: Run the clip command via Bash.
+   - **Local file**: Run the clip command via Bash.
 3. Report the output file path to the user.
 
 ## YouTube Special Handling

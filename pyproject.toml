@@ -43,6 +43,9 @@ packages = ["src/wikismith"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 asyncio_mode = "auto"
+markers = [
+    "integration: tests that hit real network/filesystem (deselect with -m 'not integration')",
+]
 
 [tool.ruff]
 target-version = "py39"

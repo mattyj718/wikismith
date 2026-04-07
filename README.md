@@ -58,7 +58,7 @@ wikismith lint
 The primary interface. Copy the skill files into your project:
 
 ```bash
-cp -r skills/ .claude/commands/
+cp -r skills/ .claude/skills/
 ```
 
 Then in a Claude Code session:
