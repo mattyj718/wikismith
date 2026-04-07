@@ -1,0 +1,49 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "wikismith"
+version = "0.1.0"
+description = "LLM-powered wiki compiler for Obsidian vaults"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.9"
+authors = [
+    { name = "Matt Johnson" },
+]
+keywords = ["obsidian", "wiki", "llm", "rag", "knowledge-base"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Text Processing :: Markup :: Markdown",
+]
+dependencies = [
+    "typer>=0.15",
+    "rich>=13.0",
+    "pyyaml>=6.0",
+    "httpx>=0.27",
+    "python-dotenv>=1.0",
+]
+
+[project.optional-dependencies]
+youtube = ["yt-dlp>=2024.0", "youtube-transcript-api>=1.0"]
+pdf = ["pymupdf4llm>=0.0.10"]
+api = ["anthropic>=0.40"]
+all = ["wikismith[youtube,pdf,api]"]
+dev = ["pytest>=8.0", "pytest-asyncio>=0.23", "ruff>=0.4"]
+
+[project.scripts]
+wikismith = "wikismith.cli:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/wikismith"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+[tool.ruff]
+target-version = "py39"
+line-length = 120

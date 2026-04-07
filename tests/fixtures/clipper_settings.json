@@ -1,0 +1,39 @@
+{
+  "template_list": ["tmpl_default_summary", "tmpl_youtube", "tmpl_github", "tmpl_default"],
+  "template_tmpl_default": {
+    "id": "tmpl_default",
+    "name": "Default",
+    "triggers": [],
+    "noteNameFormat": "{{date|date:\"YYYY-MM-DD\"}} - {{title}}",
+    "path": "Storage/Clippings/{{date|date:\"YYYY\"}}/{{date|date:\"MM - MMM\"}}",
+    "noteContentFormat": "{{content}}",
+    "behavior": "create"
+  },
+  "template_tmpl_default_summary": {
+    "id": "tmpl_default_summary",
+    "name": "Default - With Summary",
+    "triggers": [],
+    "noteNameFormat": "{{date|date:\"YYYY-MM-DD\"}} - {{title}}",
+    "path": "Storage/Clippings/{{date|date:\"YYYY\"}}/{{date|date:\"MM - MMM\"}}",
+    "noteContentFormat": "Summary: {{description}}\n---\n{{content}}",
+    "behavior": "create"
+  },
+  "template_tmpl_youtube": {
+    "id": "tmpl_youtube",
+    "name": "YouTube Transcript",
+    "triggers": ["https://www.youtube.com/watch", "https://youtube.com/watch", "https://youtu.be/"],
+    "noteNameFormat": "{{date|date:\"YYYY-MM-DD\"}} - youtube.com - {{title}}",
+    "path": "Storage/Clippings/{{date|date:\"YYYY\"}}/{{date|date:\"MM - MMM\"}}",
+    "noteContentFormat": "# {{title}}\n\n{{content}}",
+    "behavior": "create"
+  },
+  "template_tmpl_github": {
+    "id": "tmpl_github",
+    "name": "GitHub Repository",
+    "triggers": ["https://github.com/"],
+    "noteNameFormat": "{{date|date:\"YYYY-MM-DD\"}} - {{title}}",
+    "path": "Storage/Clippings/{{date|date:\"YYYY\"}}/{{date|date:\"MM - MMM\"}}",
+    "noteContentFormat": "# {{title}}\n\n{{content}}",
+    "behavior": "create"
+  }
+}

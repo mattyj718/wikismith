@@ -1,0 +1,50 @@
+# wikismith.example.yaml
+# Copy to wikismith.yaml and edit paths for your setup.
+# Or run: wikismith init
+
+version: 1
+name: "My Knowledge Base"
+
+# Where your raw notes live (Obsidian vault, folder of markdown files, etc.)
+source:
+  path: "~/Documents/MyVault"
+  include:
+    - "**/*.md"
+  exclude:
+    - ".obsidian/**"       # Obsidian internal config
+    - "_wiki/**"           # Don't compile the wiki output
+    - ".trash/**"          # Obsidian trash
+
+# Where the compiled wiki goes
+output:
+  path: "~/Documents/MyVault/_wiki"   # Can be inside the same vault
+  path_template: "concepts/{slug}.md"
+  index_file: "_index.md"
+  sources_file: "_sources.md"
+
+# Compilation settings
+compile:
+  max_concepts: 150        # Cap on generated concept articles
+  language: "en"           # Output language
+  strategy: "incremental"  # incremental (only changed files) or full
+  parallel: 5              # Max concurrent LLM calls
+
+# Clipping settings
+clip:
+  output_path: "Storage/Clippings/{year}/{month_num} - {month_abbr}"
+  filename_template: "{date} - {domain} - {title}"
+  clipper_settings: null   # Path to exported Obsidian Web Clipper JSON (optional)
+  download_images: true
+
+# LLM settings (standalone CLI only; Claude Code skills use session tokens)
+llm:
+  provider: "anthropic"
+  compile_model: "claude-sonnet-4-6"
+  query_model: "claude-sonnet-4-6"
+  lint_model: "claude-haiku-4-5-20251001"
+  api_key_env: "ANTHROPIC_API_KEY"   # Name of the env var (not the key itself)
+  # base_url: "http://localhost:11434/v1"  # Uncomment for Ollama / local models
+
+# State tracking (relative to output.path)
+state:
+  path: ".wikismith/"
