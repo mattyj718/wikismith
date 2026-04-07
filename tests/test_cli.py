@@ -1,8 +1,9 @@
-"""Tests for wikismith.cli — CLI skeleton and init command."""
+"""Tests for wikismith.cli — CLI skeleton, init, and wired commands."""
 
 from __future__ import annotations
 
 from pathlib import Path
+from textwrap import dedent
 
 from typer.testing import CliRunner
 
@@ -56,3 +57,60 @@ class TestInitCommand:
         assert result.exit_code != 0 or "already exists" in result.output.lower()
         # Original content preserved
         assert (tmp_path / "wikismith.yaml").read_text() == "existing: true"
+
+
+class TestClipCLI:
+    """Test that the clip command actually calls the clip pipeline (not just --help)."""
+
+    def _write_config(self, tmp_path: Path) -> Path:
+        vault = tmp_path / "vault"
+        vault.mkdir()
+        cfg = tmp_path / "wikismith.yaml"
+        cfg.write_text(dedent(f"""\
+            version: 1
+            source:
+              path: "{vault}"
+            output:
+              path: "{vault}/_wiki"
+            clip:
+              output_path: "Clippings"
+              filename_template: "{{date}} - {{title}}"
+        """))
+        return cfg
+
+    def test_clip_local_md_produces_file(self, tmp_path: Path):
+        cfg = self._write_config(tmp_path)
+        src = tmp_path / "raw-note.md"
+        src.write_text("# Test Note\n\nSome content for the CLI test.")
+
+        result = runner.invoke(app, ["clip", str(src), "--config", str(cfg)])
+
+        assert result.exit_code == 0, f"clip failed: {result.output}"
+        # Output should print the file path
+        assert ".md" in result.output
+        # File should exist in vault
+        vault = tmp_path / "vault"
+        clipped = list(vault.rglob("*.md"))
+        assert len(clipped) >= 1
+        content = clipped[0].read_text()
+        assert "Test Note" in content or "Some content" in content
+
+    def test_clip_local_txt_produces_file(self, tmp_path: Path):
+        cfg = self._write_config(tmp_path)
+        src = tmp_path / "notes.txt"
+        src.write_text("Plain text meeting notes about the roadmap.")
+
+        result = runner.invoke(app, ["clip", str(src), "--config", str(cfg)])
+
+        assert result.exit_code == 0, f"clip failed: {result.output}"
+        vault = tmp_path / "vault"
+        clipped = list(vault.rglob("*.md"))
+        assert len(clipped) >= 1
+        content = clipped[0].read_text()
+        assert "---" in content  # has frontmatter
+        assert "roadmap" in content
+
+    def test_clip_invalid_source_fails(self, tmp_path: Path):
+        cfg = self._write_config(tmp_path)
+        result = runner.invoke(app, ["clip", "not-a-url-or-file", "--config", str(cfg)])
+        assert result.exit_code != 0

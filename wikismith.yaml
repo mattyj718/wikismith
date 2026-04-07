@@ -1,0 +1,42 @@
+version: 1
+name: "MJVault"
+
+source:
+  path: "/Users/matt.johnson/Documents/MJVault"
+  include:
+    - "**/*.md"
+  exclude:
+    - ".obsidian/**"
+    - "_wiki/**"
+    - ".trash/**"
+
+output:
+  path: "/Users/matt.johnson/Documents/MJVault/_wiki"
+  path_template: "concepts/{slug}.md"
+  index_file: "_index.md"
+  sources_file: "_sources.md"
+
+compile:
+  max_concepts: 150
+  language: "en"
+  strategy: "incremental"
+  parallel: 5
+
+clip:
+  output_path: "Storage/Clippings/{year}/{month_num} - {month_abbr}"
+  filename_template: "{date} - {domain} - {title}"
+  clipper_settings: "/Users/matt.johnson/Downloads/obsidian-web-clipper-settings (1).json"
+  download_images: true
+  youtube:
+    fetch_transcript: true
+    ai_summary: true
+
+llm:
+  provider: "anthropic"
+  compile_model: "claude-sonnet-4-6"
+  query_model: "claude-sonnet-4-6"
+  lint_model: "claude-haiku-4-5-20251001"
+  api_key_env: "ANTHROPIC_API_KEY"
+
+state:
+  path: ".wikismith/"

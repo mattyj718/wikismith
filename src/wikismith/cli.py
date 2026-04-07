@@ -76,8 +76,22 @@ def clip(
     list_templates: bool = typer.Option(False, "--list-templates", help="List available clip templates"),
 ) -> None:
     """Clip a URL, PDF, or local file into the vault."""
-    rprint(f"[dim]clip: {source}[/dim]")
-    raise typer.Exit(code=0)
+    from wikismith.clip import route_clip
+    from wikismith.config import load_config
+
+    cfg = load_config(Path(config))
+
+    try:
+        rel_dir, filename, note = route_clip(source, cfg)
+    except Exception as e:
+        rprint(f"[red]Error:[/red] {e}")
+        raise typer.Exit(code=1)
+
+    out_dir = cfg.source.path / rel_dir
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out_path = out_dir / filename
+    out_path.write_text(note, encoding="utf-8")
+    rprint(str(out_path))
 
 
 @app.command()
