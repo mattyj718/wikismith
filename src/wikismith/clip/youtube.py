@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import datetime as dt
 import re
+from pathlib import Path
 from typing import List, Optional, Tuple
 from urllib.parse import parse_qs, urlparse
 
@@ -142,9 +143,11 @@ def clip_youtube(url: str, config: Config) -> Tuple[str, str, str]:
 
     canonical = f"https://www.youtube.com/watch?v={video_id}"
 
-    # Metadata via yt-dlp
+    # Metadata via yt-dlp (resolve from same venv as this package)
+    import sys
+    yt_dlp_bin = str(Path(sys.executable).parent / "yt-dlp")
     result = subprocess.run(
-        ["yt-dlp", "--dump-json", "--no-download", "--no-warnings", canonical],
+        [yt_dlp_bin, "--dump-json", "--no-download", "--no-warnings", canonical],
         capture_output=True, text=True, timeout=60,
     )
     if result.returncode != 0:

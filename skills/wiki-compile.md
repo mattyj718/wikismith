@@ -55,9 +55,17 @@ generated: {today's date}
 # {title}
 
 {Synthesized article content drawing from the source material.
-Cross-reference related concepts with [[concept-id]] wikilinks.
-Cite sources with [source: filename].}
+Cross-reference related concepts with [[concept-id]] wikilinks.}
+
+---
+
+## Sources
+
+- [[{source1}]]
+- [[{source2}]]
 ```
+
+The `sources:` frontmatter list is for programmatic use (lint, compile state). The `## Sources` section at the bottom renders as clickable `[[wikilinks]]` in Obsidian so users can navigate directly to the original notes.
 
 ### 6. Generate Index
 Write `{output.path}/_index.md`:

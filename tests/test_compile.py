@@ -168,12 +168,14 @@ class TestGenerateArticle:
         concept = {"id": "topic-a", "title": "Topic A", "summary": "About A.", "related_sources": ["notes/topic-a.md"]}
         sources = {"notes/topic-a.md": "# Topic A\n\nDetailed content about A."}
 
-        mock_article = "---\ntitle: Topic A\n---\n\n# Topic A\n\nSynthesized article about Topic A.\n\nRelated: [[topic-b]]\n\n[source: notes/topic-a.md]"
+        mock_article = "---\ntitle: Topic A\nsources:\n  - notes/topic-a.md\n---\n\n# Topic A\n\nSynthesized article about Topic A.\n\nRelated: [[topic-b]]\n\n---\n\n## Sources\n\n- [[notes/topic-a.md]]\n"
         with patch("wikismith.compile._call_llm_article", return_value=mock_article):
             result = generate_article(concept, sources, ["topic-a", "topic-b"], config)
 
         assert "---" in result
         assert "Topic A" in result
+        assert "## Sources" in result
+        assert "[[notes/topic-a.md]]" in result
 
 
 # ===========================================================================
@@ -223,7 +225,7 @@ class TestRunCompile:
         mock_concepts = [
             {"id": "topic-a", "title": "Topic A", "summary": "About A.", "related_sources": ["notes/topic-a.md"]},
         ]
-        mock_article = "---\ntitle: Topic A\n---\n\n# Topic A\n\nArticle content."
+        mock_article = "---\ntitle: Topic A\nsources:\n  - notes/topic-a.md\n---\n\n# Topic A\n\nArticle content.\n\n---\n\n## Sources\n\n- [[notes/topic-a.md]]\n"
 
         with patch("wikismith.compile._call_llm_extract", return_value=mock_concepts), \
              patch("wikismith.compile._call_llm_article", return_value=mock_article):
@@ -243,7 +245,7 @@ class TestRunCompile:
         mock_concepts = [
             {"id": "topic-a", "title": "Topic A", "summary": "About A.", "related_sources": ["notes/topic-a.md"]},
         ]
-        mock_article = "---\ntitle: Topic A\n---\n\n# Topic A\n\nArticle."
+        mock_article = "---\ntitle: Topic A\nsources:\n  - notes/topic-a.md\n---\n\n# Topic A\n\nArticle.\n\n---\n\n## Sources\n\n- [[notes/topic-a.md]]\n"
 
         with patch("wikismith.compile._call_llm_extract", return_value=mock_concepts), \
              patch("wikismith.compile._call_llm_article", return_value=mock_article):
@@ -267,7 +269,7 @@ class TestRunCompile:
         mock_concepts = [
             {"id": "topic-a", "title": "Topic A", "summary": "About A.", "related_sources": ["notes/topic-a.md"]},
         ]
-        mock_article = "---\ntitle: Topic A\n---\n\nArticle."
+        mock_article = "---\ntitle: Topic A\nsources:\n  - notes/topic-a.md\n---\n\n# Topic A\n\nArticle.\n\n---\n\n## Sources\n\n- [[notes/topic-a.md]]\n"
 
         with patch("wikismith.compile._call_llm_extract", return_value=mock_concepts), \
              patch("wikismith.compile._call_llm_article", return_value=mock_article):
@@ -277,7 +279,7 @@ class TestRunCompile:
         (vault / "notes" / "topic-a.md").write_text("# Topic A\n\nUpdated content!!!")
 
         with patch("wikismith.compile._call_llm_extract", return_value=mock_concepts), \
-             patch("wikismith.compile._call_llm_article", return_value="---\ntitle: Topic A\n---\n\nUpdated."):
+             patch("wikismith.compile._call_llm_article", return_value="---\ntitle: Topic A\nsources:\n  - notes/topic-a.md\n---\n\nUpdated.\n\n---\n\n## Sources\n\n- [[notes/topic-a.md]]\n"):
             result = run_compile(config)
 
         assert result.updated > 0 or result.new > 0
